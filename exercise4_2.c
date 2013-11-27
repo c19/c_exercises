@@ -7,7 +7,7 @@
 struct staff_type
 {
 	int id;
-	char name[10];
+	char name[64];
 };
 
 int cmp(const void *staff1, const void *staff2){
@@ -20,10 +20,10 @@ void* b_search(void *base, int total, int ele_size, void *target, int(*cmp)(cons
 	int mid,result;
 	while (head < tail){
 		mid = (head + tail)/2;
-		result = cmp(base + mid*ele_size, target);
+		result = cmp((char *)base + mid*ele_size, target); // force type cast to eliminate type warnings
 		if (result == 0)
 		{
-			return base + mid*ele_size;
+			return (char *)base + mid*ele_size;
 		}else if (result > 0)
 		{
 			tail = mid;
@@ -35,7 +35,7 @@ void* b_search(void *base, int total, int ele_size, void *target, int(*cmp)(cons
 }
 
 void input_staff(staff_type *staff){
-	scanf("%d,%10s", &staff->id, (char *)&staff->name);
+	scanf("%d %63s", &staff->id, (char *)&staff->name);
 }
 
 void output_staff(staff_type *staff, int length){
@@ -53,8 +53,9 @@ staff_type* get_staff_by_id(staff_type *staff_array, int total, int id){
 
 int main(int argc, char const *argv[])
 {
-	#define NUM 10
+	#define NUM 3
 	staff_type staff[NUM];
+	printf("input staff id and name like this:  32124 杨广\n press enter to input each staff\n");
 	for (int i = 0; i < NUM; ++i)
 	{
 		input_staff(&staff[i]);
@@ -64,6 +65,7 @@ int main(int argc, char const *argv[])
 	output_staff(staff, sizeof(staff)/sizeof(staff[0]));
 	int id;
 	staff_type *target;
+	printf("input id to lookup staff\n");
 	scanf("%d", &id);
 	target = get_staff_by_id(staff, NUM, id);
 	output_staff(target, 1);
