@@ -18,18 +18,22 @@ void* b_search(void *base, int total, int ele_size, void *target, int(*cmp)(cons
 	int head = 0;
 	int tail = total - 1;
 	int mid,result;
-	while (head < tail){
+	while (head <= tail){
 		mid = (head + tail)/2;
 		result = cmp((char *)base + mid*ele_size, target); // force type cast to eliminate type warnings
-		if (result == 0)
-		{
-			return (char *)base + mid*ele_size;
-		}else if (result > 0)
+		printf("head %d,mid %d, result %d, tail %d\n", head, mid, result, tail);
+		if (result > 0)
 		{
 			tail = mid - 1;
-		}else{
-			head = mid + 1;
 		}
+		else if (result < 0)
+		{
+			head = mid + 1;
+		}else{
+			return (char *)base + mid*ele_size;
+		}
+		printf("head %d,mid %d, result %d, tail %d\n", head, mid, result, tail);
+		printf("\n");
 	}
 	return NULL;
 }
@@ -57,7 +61,7 @@ staff_type* get_staff_by_id(staff_type *staff_array, int total, int id){
 
 int main(int argc, char const *argv[])
 {
-	#define NUM 2
+	#define NUM 3
 	staff_type staff[NUM];
 	printf("input staff id and name like this:  32124 杨广\n press enter to input each staff\n");
 	for (int i = 0; i < NUM; ++i)
@@ -72,7 +76,7 @@ int main(int argc, char const *argv[])
 	printf("input id to lookup staff\n");
 	scanf("%d", &id);
 	target = get_staff_by_id(staff, NUM, id);
-	if (target)
+	if (target != NULL)
 	{
 		output_staff(target, 1);
 	}else{
