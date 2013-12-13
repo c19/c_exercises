@@ -26,9 +26,9 @@ void* b_search(void *base, int total, int ele_size, void *target, int(*cmp)(cons
 			return (char *)base + mid*ele_size;
 		}else if (result > 0)
 		{
-			tail = mid;
+			tail = mid - 1;
 		}else{
-			head = mid;
+			head = mid + 1;
 		}
 	}
 	return NULL;
@@ -48,12 +48,16 @@ void output_staff(staff_type *staff, int length){
 staff_type* get_staff_by_id(staff_type *staff_array, int total, int id){
 		staff_type target;
 		target.id = id;
-		return (staff_type*)b_search(staff_array, total, sizeof(staff_type), &target, cmp);
+		void *result;
+		result = (staff_type*)b_search(staff_array, total, sizeof(staff_type), &target, cmp);
+		if (result)
+			return (staff_type*)result;
+		return NULL;
 }
 
 int main(int argc, char const *argv[])
 {
-	#define NUM 3
+	#define NUM 2
 	staff_type staff[NUM];
 	printf("input staff id and name like this:  32124 杨广\n press enter to input each staff\n");
 	for (int i = 0; i < NUM; ++i)
@@ -68,7 +72,12 @@ int main(int argc, char const *argv[])
 	printf("input id to lookup staff\n");
 	scanf("%d", &id);
 	target = get_staff_by_id(staff, NUM, id);
-	output_staff(target, 1);
+	if (target)
+	{
+		output_staff(target, 1);
+	}else{
+		printf("NOT FOUND\n");
+	}
 	return 0;
 }
 
