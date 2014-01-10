@@ -474,7 +474,8 @@ FILE *ensure_open_file(char const *filename){
 	if ((file = fopen(filename, "r")) == NULL){
 		char *buff = (char *)malloc(128);
 		snprintf(buff, 128, "open file %s failed, file may not exist or permission denied.", filename);
-		fatal(buff);
+		warn(buff);
+		return (FILE *)0;
 	}
 	return file;
 }
@@ -572,6 +573,7 @@ Node *import_data(char const *filename, Node *root, u_int *error_count, u_int *r
 	Record *record;
 	*error_count = 0;
 	*record_count= 0;
+	if (!file) return root;
 	printf("Note: importing from %s\n", filename);
 	while(error != END_OF_FILE){
 		record = parse_line(file, &error);
